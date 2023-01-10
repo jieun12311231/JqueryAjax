@@ -38,6 +38,8 @@ import co.micol.prj.notice.command.NoticeInsert;
 import co.micol.prj.notice.command.NoticeInsertForm;
 import co.micol.prj.notice.command.NoticeList;
 import co.micol.prj.notice.command.NoticeListPaging;
+import co.micol.prj.notice.command.NoticeObject;
+import co.micol.prj.notice.command.NoticeObjectPaging;
 import co.micol.prj.notice.command.NoticePagingForm;
 import co.micol.prj.notice.command.NoticeSelect;
 
@@ -92,8 +94,8 @@ public class FrontController extends HttpServlet {
 		map.put("/noticePagingForm.do", new NoticePagingForm());  //페이징
 		map.put("/noticeListPaging.do", new NoticeListPaging()); //데이터 가지고 올 클래스
 		
-//		map.put("/noticeObjectPaging.do", new NoticeObjectPaging());// object 페이징
-		
+		map.put("/noticeObjectPaging.do", new NoticeObjectPaging());// object 페이징
+		map.put("/noticeObject.do", new NoticeObject()); //데이터 갖고 오기
 	}
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

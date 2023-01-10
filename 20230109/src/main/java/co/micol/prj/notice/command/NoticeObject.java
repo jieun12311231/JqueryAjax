@@ -1,5 +1,7 @@
 package co.micol.prj.notice.command;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,41 +18,37 @@ import co.micol.prj.notice.service.NoticeService;
 import co.micol.prj.notice.service.NoticeVO;
 import co.micol.prj.notice.serviceImpl.NoticeServiceImpl;
 
-public class NoticeListPaging implements Command {
+public class NoticeObject implements Command {
 
 	@Override
 	public String exec(HttpServletRequest request, HttpServletResponse response) {
-		// 데이터 가지고 오기
+		// 객체 타입으로 데이터 받아오기
+		
 		NoticeService service = new NoticeServiceImpl();
 		List<NoticeVO> notices = new ArrayList<NoticeVO>();
 
 		notices = service.noticeSelectList();
 		
-		List<List<String>> collect = new ArrayList<>();
-		for(NoticeVO vo : notices) {  // 반복문 돌면서 VO에 원하는 형식으로 데이터를 담아줌
-			List<String> data = new ArrayList<>(); 
-			data.add(String.valueOf(vo.getNoticeId()));  // id
-			data.add(vo.getNoticeWriter());
-			data.add(vo.getNoticeDate().toLocaleString());  // ?
-			data.add(vo.getNoticeTitle());
-			data.add(vo.getNoticeFile());
-			data.add(String.valueOf(vo.getNoticeHit()));
-			
-			collect.add(data);  //반복문으로 담은 data를 list에 담아줌
-		}
-
-		Map<String, Object>map = new HashMap<>();
+//		for(NoticeVO vo : notices) {
+//			List<String> data = new ArrayList<>();
+//			data.add(String.valueOf(vo.getNoticeId())); 
+//			data.add(vo.getNoticeWriter());
+//			data.add(vo.getNoticeDate().toLocaleString());
+//			data.add(vo.getNoticeTitle());
+//			data.add(vo.getNoticeFile());
+//			data.add(String.valueOf(vo.getNoticeHit())); 
+//		}
 		
-		map.put("data", collect);
+		Map<String, Object> map = new HashMap<>();
+
+		map.put("data", notices);
 		
 		ObjectMapper mapper = new ObjectMapper();
-		
 		String json = "";
-		
+
 		try {
 			json = mapper.writeValueAsString(map);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
