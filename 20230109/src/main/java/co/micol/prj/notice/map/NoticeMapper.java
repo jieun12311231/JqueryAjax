@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import co.micol.prj.notice.command.Criteria;
 import co.micol.prj.notice.service.NoticeAttechVO;
 import co.micol.prj.notice.service.NoticeVO;
 
@@ -19,4 +20,7 @@ public interface NoticeMapper {
 	
 	void noticeHitUpdate(int id); //조회수 증가
 	List<NoticeVO> noticeSearchList(@Param("key") String key, @Param("val") String val);  //게시글 내 검색을 위해
+	
+	List<NoticeVO> noticeListPaging(Criteria cri);  //페이징 변수로 페이지가 들어감 amount : 한페이지에 보여줄 데이터 개수
+	int pagingAllCount(Criteria cri);  // 전체 데이터의 개수 가지고 오기 
 }

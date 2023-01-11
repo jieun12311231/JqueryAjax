@@ -19,6 +19,7 @@
     </style>
 <div align="center">
     <div>
+    <br>
         <h1>🍓회 원 가 입🍓</h1>
     </div>
     <div>
