@@ -110,6 +110,7 @@ public class FrontController extends HttpServlet {
 	
 		//리스트 삭제
 		map.put("/noticeDelListAjax.do", new NoticeDelListAjax());
+		//깃 연습
 	}
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
