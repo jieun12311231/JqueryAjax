@@ -34,14 +34,18 @@ import co.micol.prj.member.command.ProductList;
 import co.micol.prj.member.command.ProductListForm;
 import co.micol.prj.member.command.RelatedProducts;
 import co.micol.prj.member.command.UpdateMemberAjax;
+import co.micol.prj.notice.command.NoticeDelListAjax;
 import co.micol.prj.notice.command.NoticeInsert;
 import co.micol.prj.notice.command.NoticeInsertForm;
 import co.micol.prj.notice.command.NoticeList;
 import co.micol.prj.notice.command.NoticeListPaging;
 import co.micol.prj.notice.command.NoticeObject;
 import co.micol.prj.notice.command.NoticeObjectPaging;
+import co.micol.prj.notice.command.NoticePaging;
+import co.micol.prj.notice.command.NoticePagingAjax;
 import co.micol.prj.notice.command.NoticePagingForm;
 import co.micol.prj.notice.command.NoticeSelect;
+import co.micol.prj.notice.command.noticePagingDTO;
 
 //@WebServlet("*.do")
 public class FrontController extends HttpServlet {
@@ -90,12 +94,22 @@ public class FrontController extends HttpServlet {
 		map.put("/productDetail.do",new ProductDetail());  //상품의 정보에 대한 데이터를 넘겨주는 클래스 //json 기능 
 		map.put("/relatedProducts.do", new RelatedProducts());  //관련 상품 띄우기 
 		
-		//게시한 페이징
+		//게시한 페이징 - dataTable
 		map.put("/noticePagingForm.do", new NoticePagingForm());  //페이징
 		map.put("/noticeListPaging.do", new NoticeListPaging()); //데이터 가지고 올 클래스
 		
+		//게시한 페이징 - dataTable(객체타입)
 		map.put("/noticeObjectPaging.do", new NoticeObjectPaging());// object 페이징
 		map.put("/noticeObject.do", new NoticeObject()); //데이터 갖고 오기
+		
+		
+		//쿼리문 활용한 페이징
+		map.put("/noticePaging.do", new NoticePaging());  //페이지 열어주는 통로
+		map.put("/noticePagingDTO.do",new noticePagingDTO());  //페이지마다 가지고 오기 위한 용도   
+		map.put("/noticePagingAjax.do", new NoticePagingAjax());    //데이터 받아오는 클래스
+	
+		//리스트 삭제
+		map.put("/noticeDelListAjax.do", new NoticeDelListAjax());
 	}
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

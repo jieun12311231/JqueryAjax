@@ -8,10 +8,26 @@
 <title>Insert title here</title>
 <link rel="stylesheet" href="css/menu.css">
 </head>
+<style>
+@font-face {
+	font-family: 'GangwonEdu_OTFBoldA';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff')
+		format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+* {
+	font-family: 'GangwonEdu_OTFBoldA';
+}
+
+</style>
 <body>
 	<nav id="topMenu">
 		<ul>
 			<li><a class="menuLink" href="main.do">Home</a></li>
+			<li><a class="menuLink" href="memberListJquery.do">Jquery테스트</a></li>
 			<li><a class="menuLink" href="noticeList.do">Notice</a></li>
 			<li><a class="menuLink" href="#">Content</a></li>
 			<c:if test="${author eq 'ADMIN' }">
@@ -27,10 +43,7 @@
 				<li><a class="menuLink" href="memberLogout.do">Logout</a></li>
 			</c:if>
 
-			<li><a class="menuLink" href="test.do">테스트</a></li>
-			
-				<li><a class="menuLink" href="memberListJquery.do">Jquery테스트</a></li>
-			
+
 		</ul>
 	</nav>
 </body>

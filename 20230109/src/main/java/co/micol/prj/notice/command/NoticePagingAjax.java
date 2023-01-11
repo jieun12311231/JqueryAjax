@@ -1,11 +1,6 @@
 package co.micol.prj.notice.command;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,30 +13,41 @@ import co.micol.prj.notice.service.NoticeService;
 import co.micol.prj.notice.service.NoticeVO;
 import co.micol.prj.notice.serviceImpl.NoticeServiceImpl;
 
-public class NoticeObject implements Command {
+public class NoticePagingAjax implements Command {
 
 	@Override
 	public String exec(HttpServletRequest request, HttpServletResponse response) {
-		// 객체 타입으로 데이터 받아오기
+		// 데이터 받아오는 곳 
 		
+		String page = request.getParameter("page");
+		String amount = request.getParameter("amount");
+		
+		//검색
+		String searchCondition = request.getParameter("searchCondition");
+		String keyword = request.getParameter("keyword");
+		
+		//두개의 매개값을 받아옴 
+		Criteria cri = new Criteria(Integer.parseInt(page),Integer.parseInt(amount));
+		
+		
+		cri.setSearchCondition(searchCondition);
+		cri.setKeyword(keyword);
+				
 		NoticeService service = new NoticeServiceImpl();
-		List<NoticeVO> notices = new ArrayList<NoticeVO>();
-
-		notices = service.noticeSelectList();
-			
-		Map<String, Object> map = new HashMap<>();
-
-		map.put("data", notices);
+		
+		List<NoticeVO> list = service.noticeListPaging(cri);
 		
 		ObjectMapper mapper = new ObjectMapper();
+		
 		String json = "";
-
+		
 		try {
-			json = mapper.writeValueAsString(map);
+			json = mapper.writeValueAsString(list);
 		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		return "Ajax:" + json;
 	}
 
