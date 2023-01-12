@@ -36,6 +36,7 @@ import co.micol.prj.member.command.RelatedProducts;
 import co.micol.prj.member.command.UpdateMemberAjax;
 import co.micol.prj.notice.command.NoticeDelListAjax;
 import co.micol.prj.notice.command.NoticeInsert;
+import co.micol.prj.notice.command.NoticeInsertAjax;
 import co.micol.prj.notice.command.NoticeInsertForm;
 import co.micol.prj.notice.command.NoticeList;
 import co.micol.prj.notice.command.NoticeListPaging;
@@ -110,6 +111,9 @@ public class FrontController extends HttpServlet {
 	
 		//리스트 삭제
 		map.put("/noticeDelListAjax.do", new NoticeDelListAjax());
+		
+		//리스트 등록
+		map.put("/noticeInsertAjax.do", new NoticeInsertAjax());
 		
 	}
 

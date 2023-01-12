@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>event.html</title>
+    <script src="https://unpkg.com/vue@2"></script>
+
+</head>
+
+<body>
+    <div id="app">
+        <!-- v-on : 이벤트 지정 -->
+        <button v-on:click="countUp">🌰카운트 증가🌰</button>
+        <button v-on:click="countNum(2)">🌰2씩 카운트 증가🌰</button>
+
+        <hr>
+        <input type="number" value="5" v-model.number="mynum">
+        <!--model에 타입을 지정 할수도있음! -->
+        <button v-on:click="countVal()">🌰카운트 증가🌰</button>
+        <p>🌰 {{count}}개</p>
+        <hr>
+        <div>
+            과일바구니 : <input type="text" v-model="fruit">
+            <button v-on:click="addFruit">과일담기</button>
+            <button v-on:click="removeFruit">과일빼기</button>
+            <ul style="list-style: none; display: flex;">
+                <li v-for="item in fruits">
+                    <span>{{item}}</span>
+                    <span><button v-on:click="delFruit(item)">💥</button></span>
+                </li>
+            </ul>
+        </div>
+
+
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                count: 0,
+                mynum: '',
+                fruits: ['🍓', '🍉', '🍅', '🍍', '🍌', '🍏','🍑'],
+                fruit: ''
+            },
+            methods: { //이벤트는 method안에 정의를 해야함 
+                countUp: function () {
+                    console.log('countUp', this) //this : 0  -> count에 접근하기 위해서 
+                    this.count++;
+                },
+                countNum: function (cnt) {
+                    console.log();
+                    this.count += cnt
+                },
+                countVal: function () {
+                    // this.count += parseInt(this.mynum)  //파싱 안해주면 + 연산자가 문자열로인식하기때문에 parseInt 꼭 넣어줘야지 제대로 계산됨
+                    this.count += this.mynum //파싱 안해주면 + 연산자가 문자열로인식하기때문에 parseInt 꼭 넣어줘야지 제대로 계산됨
+                },
+                addFruit: function () {
+                    if(!this.fruit){
+                        alert('과일을 입력하세요')
+                        return
+                    }
+                    this.fruits.push(this.fruit); //push를 이용해서 배열에 담아줌 
+                    this.fruit = '';
+                    
+                },
+                removeFruit: function () {
+                    //방법1)
+                    this.fruits.forEach((item, idx, ary) => { //
+                        if (item == this.fruit)
+                            this.fruits.splice(idx, 1); //splice(인덱스 값 위치, 추가삭제수정할 개수,새로 담을 값(대체도 가능))
+                    });
+                    this.fruit = '';
+
+                    //방법2)
+                    // for(let i = 0;i<this.fruits.length;i++){
+                    //     if(this.fruit == this.fruits[i]){
+                    //         this.fruits.splice(i,1);
+                    //     }
+                    // }
+                    // this.fruit='';
+
+                },
+                delFruit:function(item){
+                    console.log(this)
+                    this.fruits.forEach((el,idx) =>{
+                        if(el == item){
+                            this.fruits.splice(idx,1)
+                        }
+                    })
+                    // for(let i = 0;i<this.fruits.length;i++){
+                    //     if(item == this.fruits[i]){
+                    //         this.fruits.splice(i,1);
+                    //     }
+                    // }
+
+
+                    
+                }
+            }
+        })
+    </script>
+
+</body>
+
+</html>

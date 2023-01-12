@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>basic.html</title>
+    <!-- 라이브러리 필수!! -->
+    <script src="https://unpkg.com/vue@2"></script>
+
+</head>
+
+<body>
+    <!-- 🍓VVMC 모델-->
+
+    <!-- 1️⃣ -->
+    <!-- View역할 템플릿-->
+    <div id="app">
+        <p>{{msg}}</p>
+        <!--데이터를 화면에 그려줄수있는 방법 {{}}  : 머스태쉬-->
+        <p v-text="msg"></p>
+        <!--지시자 : v-text -> text형식으로 보여줌-->
+        <p v-html="mes"></p>
+        <!--지시자 : v-text -> html 형식으로 보여줌 -->
+
+
+    </div>
+
+    <script>
+        //Model 역할
+
+        new Vue({ //뷰인스턴스(객체) -> 뷰와 모델을 연결해주는 뷰모델(View  <--> Model)   
+            el: '#app', //div역할을 하는 템플릿에 역할을 넣을수 있음 아이디 값이 app인 것과 연결을 하겠다 (바인딩)
+            data: { //
+                msg: 'Hello,World',
+                mes: '<b>뚜둔!!</b>',
+
+            }
+
+        });
+    </script>
+
+
+    <!-- 2️⃣ -->
+
+    <div id="show">
+        <!--여려가지 타입 담을 수 있음 -->
+        <p>{{myNumber * 2}}</p> <!-- 연산 가넝-->
+        <p>{{stv}}</p>
+        <p>{{'🔥' + myText + '를 배워봅시다🔥'}}</p>
+        <p>{{myBool}}</p>
+        <p>{{myAry}}</p>
+        <p>{{myAry[0]}}</p> <!-- 배열에 순번 넣어주면 따로 출력 가능 -->
+        <p>{{MyObject}}</p>
+        <p>{{MyObject.name}}</p> <!-- 객체 뽑아내기 가넝 -->
+        <p>{{'이름: ' + MyObject.name +' 나이: '+MyObject.age}}</p> <!-- 객체 뽑아내기 가넝 -->
+        <p>{{$data}}</p>  <!-- 데이터에 있는 모든 요소들 출력-->
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#show',
+            data: {
+                myNumber: '1234',
+                stv: '🍓',
+                myText: 'Vue.js',
+                myBool: true,
+                myAry: ['커피', '홍차', '핫초코'],
+                MyObject: {
+                    name: '김지은',
+                    age: 29
+                }
+            }
+        })
+        console.log(vm)
+        
+        vm.myNumber = 200;  //변수 변경 가능 -> 바로바로 반영이 되어서 화면에 그려짐
+        vm.myText = 'Jquery'
+    </script>
+</body>
+
+</html>

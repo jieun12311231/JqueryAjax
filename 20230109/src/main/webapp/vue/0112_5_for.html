@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>for.html</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <!-- <script src="https://unpkg.com/vue@2"></script> -->
+</head>
+<style>
+    .odd{
+        background-color: lightpink;
+    }
+    .even{
+        background-color: lightskyblue;
+    }
+</style>
+
+<body>
+
+    <div id="app">
+        <!-- v-for : 반복문  in/of둘다 사용가능함 -->
+        <ul>
+            🌰배열활용🌰
+            <li v-for="item in myAry">{{item}}</li>
+            <li v-for="(item,index) in myAry">{{index +1 }}순위  : {{item}}</li>
+
+        </ul>
+        <hr>
+        <ul>
+            <li v-for="obj in myObj">{{obj.name}}</li>
+            <li v-for="obj in myObj">{{obj.price}}</li>
+            <li v-for="obj in myObj">{{obj.name}} : {{obj.price}}원</li>
+        </ul>
+<hr>
+<ul>
+    🌰숫자 단순반복🌰
+<li v-for="num in 10">{{num}}</li>
+</ul>
+<hr>
+<ul>🌰구구단🌰
+    <p>2단</p>
+    <li v-for="num in 9">2 x {{num}} = {{num * 2}}</li>
+    <p>3단</p>
+    <li v-for="num in 9">{{dan}} x {{num}} = {{num * dan}}</li>
+</ul>
+    </div>
+
+    <script>
+//for(let item of items)
+
+new Vue({
+    el:'#app',
+    data:{
+        myAry:['팔공산','한라산','앞산','마천산'],
+        myObj:[{
+            name:'🍓',price:1000
+        },{
+            name:'🌰',price:500
+        },{
+            name:'🥜',price:300
+        },],
+        dan:3,
+    
+    }
+})
+
+    </script>
+
+    <div id="app2">
+        <h3>🌰관심받는 언어 랭킹🌰</h3>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th v-for="th in header">{{th}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-bind:class="{myClass}" v-for="tr in ranking">
+                  <td v-for="td in tr">{{td}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+
+        new Vue({
+            el:'#app2',
+            data:{
+                cnt:2,
+                header:['프로그래밍언어',2018,2013,2008,2003,1998],
+                ranking:[
+                    ['Java',1,2,1,1,16],
+                    ['C',2,1,2,2,1],
+                    ['C++',3,4,3,3,2],
+                    ['Python',4,7,6,11,23],
+                    ['JS',7,10,8,7,20]
+                ],
+                
+                myClass: this.cnt++ % 2 == 0
+            }
+        })
+
+    </script>
+</body>
+
+</html>

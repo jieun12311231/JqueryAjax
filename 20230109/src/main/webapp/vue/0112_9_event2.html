@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>event2.html</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" v-model="friendName">
+        <input type="text" v-model="friendAge">
+        <button v-on:click="addFriend">등록</button>
+      
+    
+        <table border="1">
+            <tbody>
+                <th colspan="3">🌳떡잎마을🌳</th>
+                <tr v-for="tr in friends">
+                    <td>{{tr.name}}</td>
+                    <td>{{tr.age}}</td>
+                    <td><button v-on:click="delFriend(friendName)">삭제</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        new Vue({
+            el:'#app',
+            data:{
+                friends:[
+                    {name:'짱구',age:5},
+                    {name:'맹구',age:4},
+                    {name:'철수',age:6}
+                ],
+                friendName:'',
+                friendAge:''
+            },
+            methods:{
+                addFriend:function(){
+                    console.log(this)
+                    this.friends.push({
+                        name : this.friendName,
+                        age : this.friendAge
+                    })
+                    this.friendName='';
+                    this.friendAge='';
+                },
+                delFriend:function(friendName){
+                    // this.friends.forEach((item,idx)=>{
+                    //     if(item.name == this.friends[idx].name){
+                    //     console.log(item.name)
+                    //     // this.friends.splice(idx,1)
+                    //     }
+                    // })
+
+                    // for(let i=0; i<this.friends.length; i++){
+                    //     if(this.friends[i].name == this.friendName  && this.friends[i].age == this.friendAge){
+                    //         this.friends.splice(i,1)
+                    //     }
+                    // }
+                    for(let i=0; i<this.friends.length; i++){
+                        if(this.friends[i].name == friendName){
+                            this.friends.splice(i,1)
+                            break;
+                        }
+                    }
+                }
+
+            }
+        })
+    </script>
+
+</body>
+
+</html>

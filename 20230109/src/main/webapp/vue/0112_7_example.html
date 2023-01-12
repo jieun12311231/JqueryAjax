@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>example.html</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+
+</head>
+
+<body>
+    <div id="app">
+        <div>
+            <label for=""><input type="radio" value="Female" v-model="selGender" >여자</label>
+            <label for=""><input type="radio" value="Male" v-model="selGender">남자</label>
+        </div>
+        <div>
+            <label><input type="radio" value="1000" v-model="salGrade">1000</label>
+            <label><input type="radio" value="2000" v-model="salGrade">2000</label>
+            <label><input type="radio" value="3000" v-model="salGrade">3000</label>
+        </div>
+
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>아이디</th>
+                    <th>이름</th>
+                    <th>이메일</th>
+                    <th>성별</th>
+                    <th>급여</th>
+                   
+                </tr>
+            </thead>
+            <tbody>
+                <!--<tr v-for="member in members" v-if="member.salary >= salGrade"> --> <!--선택된 금액 이상만 보여주기-->
+                <tr v-for="member in members" v-if="member.salary >= salGrade && member.gender == selGender" > 
+                <!-- <tr v-for="member in members" v-if="member.gender == selGender"> -->  <!-- 선택된 성별만 보이게하기-->
+                    <td >{{member.id}}</td>
+                    <td >{{member.last_name + member.first_name}}</td>
+                    <td >{{member.email}}</td>
+                    <td >{{member.gender}}</td>
+                    <td>{{member.salary}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let json = `
+        [{"id":1,"first_name":"Emmery","last_name":"Seiter","email":"eseiter0@cbc.ca","gender":"Male","salary":2767},
+        {"id":2,"first_name":"Tybi","last_name":"Goly","email":"tgoly1@ox.ac.uk","gender":"Female","salary":2199},
+        {"id":3,"first_name":"Marven","last_name":"Ludlow","email":"mludlow2@sina.com.cn","gender":"Male","salary":2126},
+        {"id":4,"first_name":"Fae","last_name":"Daymont","email":"fdaymont3@csmonitor.com","gender":"Female","salary":3810},
+        {"id":5,"first_name":"Darla","last_name":"Fowley","email":"dfowley4@ca.gov","gender":"Female","salary":2379},
+        {"id":6,"first_name":"Giulietta","last_name":"Franz-Schoninger","email":"gfranzschoninger5@wufoo.com","gender":"Female","salary":1792},
+        {"id":7,"first_name":"Mercy","last_name":"Streater","email":"mstreater6@netlog.com","gender":"Female","salary":3885},
+        {"id":8,"first_name":"Sacha","last_name":"Rosander","email":"srosander7@nyu.edu","gender":"Female","salary":1102},
+        {"id":9,"first_name":"Bernadette","last_name":"Causbey","email":"bcausbey8@apache.org","gender":"Female","salary":4150},
+        {"id":10,"first_name":"Merrill","last_name":"Marieton","email":"mmarieton9@amazon.co.uk","gender":"Female","salary":3602}]
+        `
+        let list = JSON.parse(json)
+
+        console.log(list)
+
+        new Vue({
+            el: '#app',
+            data: {
+                selGender: 'Female',  //초기값 주기
+                // selGender: '',  //선택하면 값이 뜨도록 하기
+                members: list,
+                salGrade : 1000
+            }
+            // conputed: {
+            //     filterMember: function () {
+            //         return this.members.filter(member => {
+            //             return member == this.selGender ? true : false;
+                        
+
+            //         })
+            //     }
+            // }
+        })
+    </script>
+</body>
+
+
+
+</html>

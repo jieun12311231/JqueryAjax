@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>event4.html</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+</head>
+
+<body>
+    <!-- watch :속성을 감시하고 있다가 특정 경우가 되면 상태가 발동이 됨.-->
+    <div id="app">
+        <input type="text" v-model="forbidText">
+        <textarea name="" id="" cols="30" rows="3" v-model="inputTxt" v-bind:disabled="writable"></textarea>
+        <p>{{inputTxt}}</p>
+        <!-- <input type="text" v-model.number="restTime"> -->
+        <p>남은 시간 {{restTime}}</p>
+        <button v-on:click="startTimer">시작</button>
+    
+    
+    
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                inputTxt: '',
+                forbidText:'',
+                restTime:5,
+                writable:false,
+                timer:'',
+            },
+            watch:{  //감시하는 대상을 적어줌 
+                inputTxt: function(){
+                    let pos = this.inputTxt.indexOf(this.forbidText)
+                    if(pos != -1){
+                        alert(this.forbidText +'는 입력할 수 없는 단어입니다')
+                        this.inputTxt = this.inputTxt.substring(0,pos)
+                        
+                    }
+                },
+                // inputTxt: function(){
+                //     let pos = this.inputTxt.indexOf('test')
+                //     if(pos != -1){
+                //         alert('test는 입력할 수 없는 단어입니다')
+                //         this.inputTxt = this.inputTxt.substring(0,pos)
+                        
+                //     }
+                // },
+                restTime :function(){
+                    if(this.restTime == 0 ){
+                        console.log('rest call')
+                        this.writable = true
+                        clearInterval(this.timer)
+                    }
+                }
+            },
+            methods:{
+                startTimer:function(){
+                    //this -> function() {this:window전역객체}
+                    //this -> eventHandler {this: event대상}
+                    this.timer= setInterval(()=>{
+                        // console.log('timer')
+                        this.restTime--
+                        // console.log(restTime)
+                    },1000)
+                    // return this.timer;
+                }
+
+            }
+        })
+    </script>
+</body>
+
+</html>

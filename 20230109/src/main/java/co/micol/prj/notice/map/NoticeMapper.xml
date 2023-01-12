@@ -3,7 +3,7 @@
 <mapper namespace="co.micol.prj.notice.map.NoticeMapper">
 	<select id="noticeSelectList"
 		resultType="co.micol.prj.notice.service.NoticeVO">
-		SELECT * FROM NOTICE ORDER BY NOTICE_ID
+		SELECT * FROM NOTICE ORDER BY NOTICE_ID DESC
 	</select>
 
 	<select id="noticeSelect"
@@ -77,7 +77,7 @@
 				   NOTICE_WRITER LIKE '%'||#{keyword}||'%'
 				  </if>
 				  </where>
-				  ORDER BY NOTICE_ID) A
+				  ORDER BY NOTICE_ID DESC) A
 		<![CDATA[
 			WHERE ROWNUM<=#{page}* #{amount}) B
 		WHERE B.RN >= #{page} * #{amount} - (#{amount} - 1)

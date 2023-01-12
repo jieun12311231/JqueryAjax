@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>basic3</title>
+    <script src="https://unpkg.com/vue@2"></script>
+</head>
+
+<body>
+    <!-- v-model지시자 : 양방향 바인딩 (form에 들어가는 요소 ex)input태그 ) -->
+    <div id="app">
+        <input type="text" v-model="myName">
+        <p>{{myName}}</p>
+        <textarea v-model="myText" id="" cols="30" rows="10"></textarea>
+        <p>"{{myText}}"</p>
+        <p>문자수는 {{myText.length}}자입니다</p>
+        <label for="">
+            <input type="checkbox" v-model="myCk" true-value="딩동댕" false-value="땡">
+            <p>체크 상태 값 : {{myCk}}</p>
+        </label>
+        <div>
+            <label for=""><input type="checkbox" v-model="myHb" value="📕">독서</label>
+            <label for=""><input type="checkbox" v-model="myHb" value="🏕">등산</label>
+            <label for=""><input type="checkbox" v-model="myHb" value="🏋️‍♂️">운동</label>
+            <p>선택된 취미 {{myHb}}</p>
+
+             </div>
+             <div>
+                <label for=""><input type="radio" v-model="myHby" value="📘">독서</label>
+            <label for=""><input type="radio" v-model="myHby" value="🏕">등산</label>
+            <label for=""><input type="radio" v-model="myHby" value="🏋️‍♂️">운동</label>
+            <p>선택된 취미 {{myHby}}</p>
+             </div>
+    </div>
+
+    <script>
+        new Vue({
+            el:'#app',
+            data:{
+                myName:'',  //input에 입력한 값을 바로 p에 출력을 해줄수 있음 
+                myText:'',//textarea 입력한 값을 바로 p에 출력을 해줄수 있음 
+                myCk:'',
+                myHb:[],
+                myHby:[],
+
+
+            }
+        })
+
+    </script>
+
+</body>
+
+</html>

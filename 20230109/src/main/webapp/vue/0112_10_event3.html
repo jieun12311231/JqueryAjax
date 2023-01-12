@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event3.html</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+</head>
+
+<body>
+    <div id="app">
+        <!--computed : data 값 지정  //연산 처리한 결과 값을 담을 때 사용하는 속성-->
+        <p>{{friends}}</p>
+        <p>{{filterFriend}}</p>
+        <hr>
+        <input style="width: 30px;" type="number" v-model="price">원<br>
+        <input style="width: 30px;" type="number" v-model="count">개<br>
+        <p>합계 {{price * count}}원</p>
+        <p>합계 {{sum}}원</p>
+        <hr>
+        <p>감상내용을 50자 이내로 작성해주세요</p>
+        <textarea name="" id="" cols="30" rows="3" v-model="myText" v-bind:disabled="writable"></textarea>
+        <p v-bind:style="{color:warningColor}">남은 글자 수는 {{reming}}</p>
+        <hr>
+        <input type="text" v-model="findWord">
+        <ul style="list-style: none;">
+            <li v-for="word in filterWord">{{word}}</li>
+        </ul>
+
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                friends: ['짱구', '짱아'], //실제 기본 데이터 타입이 들어감 
+                price: 1000,
+                count: 3,
+                myText: '',
+                writable:false,
+                wordList:['사과🍏','바나나🍌','good👍','딸기🍓'],
+                findWord:'',
+            },
+            computed: { //정의도 함수를 넣어서 정의를 함   // 함수 구문이 와야함 // 연산한 결과값을 반환 
+                filterFriend: function () { //friends 에서 짱 을 가지고 있는 요소들만으로 다시 배열을 만들겠다 filter : 포함된 요소를 걸러냄 
+                    return this.friends.filter(friend => {
+                        return friend.indexOf('구') != -1;
+                    })
+                },
+                sum: function () {
+                    return this.price * this.count;
+                },
+                reming: function () {
+                    return 50 - this.myText.length;
+                },
+                warningColor: function () {
+                    if(this.reming == 0){
+                        return this.writable = true
+                    }else if (this.reming <= 10) {
+                        return 'red';
+                    } else if (this.reming <= 10) {
+                        return 'blue';
+                    }
+                },
+                filterWord:function(){
+                    console.log(this)
+                    if(this.findWord){
+                        return this.wordList.filter(word=>{
+                            console.log(word, this.findWord)
+                            return word.indexOf(this.findWord) != -1;
+                        })
+                    }else{
+                        return this.wordList;
+                        
+                    }
+                }
+            }
+
+        })
+    </script>
+</body>
+
+</html>
