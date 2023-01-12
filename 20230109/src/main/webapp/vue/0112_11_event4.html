@@ -48,10 +48,28 @@
                 //금지어를 여러개 만들기-> 배열로 생각해서 반복문을 돌려서 하면됨
                 // 문자열을 배열로 변경 해주는 => split(구분자)  : 구분자를 기준으로 배열을 만들어줌 
                 inputTxt: function () {
+                    console.log(this.forbidText2)
                     let txtAry = this.forbidText2.split(',')
-                    let pos = this.inputTxt.indexOf(this.txtAry)
-                    for (let i = 0; i < this.txtAry.length; i++) {
-                        
+                    console.log(txtAry)
+                    // for (let i = 0; i < this.txtAry.length ; i++) {
+                    //     let pos = this.inputTxt.indexOf(this.txtAry[i])
+                    //     console.log(pos)
+                    //     if(pos != -1){
+                    //         alert(this.forbidText2[i]+'x')
+                    //         this.inputTxt= this.inputTxt.substring(0,pos)
+                    //     }
+                    // }
+                    // this.txtAry.forEach((item,idx)=>{
+                    //     if(this.inputTxt.indexOf(this.txtAry[idx]) != -1){
+                    //         alert(this.forbidText2[i]+'x')
+                    //         this.inputTxt= this.inputTxt.substring(0,pos)
+                    //     }
+                    // })ㄴ
+                    for (let word of txtAry) {
+                        if (this.inputTxt.indexOf(word) != -1) {
+                            alert(word + '는 입력할 수 없는 단어 입니다')
+                            this.inputTxt = this.inputTxt.substring(0, this.inputTxt.indexOf(word))
+                        }
                     }
                 },
 
