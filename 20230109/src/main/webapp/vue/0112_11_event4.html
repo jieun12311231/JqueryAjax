@@ -13,60 +13,67 @@
 <body>
     <!-- watch :속성을 감시하고 있다가 특정 경우가 되면 상태가 발동이 됨.-->
     <div id="app">
-        <input type="text" v-model="forbidText">
+        <!-- <input type="text" v-model="forbidText"> -->
+        <input type="text" v-model="forbidText2">
         <textarea name="" id="" cols="30" rows="3" v-model="inputTxt" v-bind:disabled="writable"></textarea>
         <p>{{inputTxt}}</p>
         <!-- <input type="text" v-model.number="restTime"> -->
         <p>남은 시간 {{restTime}}</p>
         <button v-on:click="startTimer">시작</button>
-    
-    
-    
+
+
+
     </div>
     <script>
         new Vue({
             el: '#app',
             data: {
                 inputTxt: '',
-                forbidText:'',
-                restTime:5,
-                writable:false,
-                timer:'',
+                // forbidText:'',
+                forbidText2: [],
+                restTime: 5,
+                writable: false,
+                timer: '',
             },
-            watch:{  //감시하는 대상을 적어줌 
-                inputTxt: function(){
-                    let pos = this.inputTxt.indexOf(this.forbidText)
-                    if(pos != -1){
-                        alert(this.forbidText +'는 입력할 수 없는 단어입니다')
-                        this.inputTxt = this.inputTxt.substring(0,pos)
+            watch: { //감시하는 대상을 적어줌 
+                //🍓input 박스에 들어오는 단어를 입력 할수 없게 하기 
+                // inputTxt: function(){
+                //     let pos = this.inputTxt.indexOf(this.forbidText)
+                //     if(pos != -1){
+                //         alert(this.forbidText +'는 입력할 수 없는 단어입니다')
+                //         this.inputTxt = this.inputTxt.substring(0,pos)
+
+                //     }
+                // },
+                //금지어를 여러개 만들기-> 배열로 생각해서 반복문을 돌려서 하면됨
+                // 문자열을 배열로 변경 해주는 => split(구분자)  : 구분자를 기준으로 배열을 만들어줌 
+                inputTxt: function () {
+                    let txtAry = this.forbidText2.split(',')
+                    let pos = this.inputTxt.indexOf(this.txtAry)
+                    for (let i = 0; i < this.txtAry.length; i++) {
                         
                     }
                 },
-                // inputTxt: function(){
-                //     let pos = this.inputTxt.indexOf('test')
-                //     if(pos != -1){
-                //         alert('test는 입력할 수 없는 단어입니다')
-                //         this.inputTxt = this.inputTxt.substring(0,pos)
-                        
-                //     }
-                // },
-                restTime :function(){
-                    if(this.restTime == 0 ){
+
+                //🍓타이머의 시간이 끝나면 textarea창 막기 
+                restTime: function () {
+                    if (this.restTime == 0) {
                         console.log('rest call')
                         this.writable = true
                         clearInterval(this.timer)
                     }
                 }
             },
-            methods:{
-                startTimer:function(){
+            methods: {
+                //🍓타이머:restTime의 시간 1초씩 감소 시켜기 
+                startTimer: function () {
                     //this -> function() {this:window전역객체}
                     //this -> eventHandler {this: event대상}
-                    this.timer= setInterval(()=>{
+                    this.timer = setInterval(() => {
                         // console.log('timer')
                         this.restTime--
                         // console.log(restTime)
-                    },1000)
+                    }, 1000)
                     // return this.timer;
                 }
 
