@@ -62,7 +62,7 @@ const addComponent = {
             mAddr: '떡잎마을',
 
             members: memberAry, //여기 변수에 접근하여서 변경하기 위해서 적어줌
-            myColor:'black'
+            myColor: 'black'
         }
     },
     methods: {
@@ -74,7 +74,7 @@ const addComponent = {
                 '&memberAge=' + this.mAge +
                 '&memberAddress=' + this.mAddr
             // console.log(params)
-            fetch('../memberAddAjax.do', {
+            fetch('../memberAddAjax.do', { //파일이 한단계 아래인 vue파일 안에 있기때문에 호출할때 앞에 ../ 꼭 넣어줘야함
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -84,22 +84,50 @@ const addComponent = {
                 .then(result => result.json())
                 .then(result => {
                     console.log(result)
+                    this.members.push(result.data)
 
                 })
                 .catch(err => console.log(err))
         },
         selectedMemberDel: function () {
-            console.log(this)
+            //선택삭제 버튼은 addComponent// 지워야하는 대상은 listComponent   =>
+            console.log(this.$parent.$children[1].targetMember) //this : listComponent
+            console.log(this) //this : listComponent
+            let targetList = this.$parent.$children[1].targetMember //삭제할 아이디가 담겨있는 리스트
+            targetList.forEach((id) => {
+                fetch('../memberDelAjax.do?id=' + id)
+                    .then(result => result.json())
+                    .then(result => {
+                        if (result.retCode == 'Success') {
+                            this.members.forEach((member, idx) => {
+                                if (member.memberId == id) {
+                                    // this.members.splice(idx, 1)
+                                    // targetList.length=0;
+                                }
+                            })
 
+                        } else {
+                            alert('오류닷')
+                        }
+
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+
+            })
+            //this.members에 포함된 값과 동일 한 것 삭제.
         }
     }
 
 }
 const listComponent = {
     template: `
+    <div>
         <table class="table">
         <thead>
             <tr>
+                <th><input type="checkbox" ></th>
                 <th>회원 아이디</th>
                 <th>회원 이름</th>
                 <th>나이</th>
@@ -110,6 +138,7 @@ const listComponent = {
         </thead>
         <tbody>
             <tr v-for="member in members">
+            <td><input type="checkbox" v-bind:value="member.memberId" v-model="targetMember"></td>
             <td>{{member.memberId}}</td>
             <td>{{member.memberName}}</td>
             <td>{{member.memberAge}}</td>
@@ -119,12 +148,13 @@ const listComponent = {
             </tr>
         </tbody>
     </table>
-    
+    {{targetMember}}
+    </div>
     `,
     data: function () {
         return {
-            members: memberAry
-
+            members: memberAry,
+            targetMember: [] //체크박스를 누르면 등록되는 배열 -> value 필요
         }
     },
     methods: { //💥
