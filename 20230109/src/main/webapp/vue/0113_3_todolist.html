@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>todoList.html</title>
+    <script src="https://unpkg.com/vue@2"></script>
+
+</head>
+<style>
+    @font-face {
+        font-family: 'GangwonEdu_OTFBoldA';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    * {
+        font-family: 'GangwonEdu_OTFBoldA';
+       
+    }
+
+    .done-style {
+        text-decoration: line-through;
+        color: lightgray;
+    }
+   
+</style>
+
+<body>
+    <h2  style="text-align: center;">🍓To Do List🍓</h2>
+    <div id="app">
+        <div v-for="todo in todos" style="text-align: left;">
+            <!--todos가 가지고 있는 요소만큼 반복 되어야함 -->
+            <label>
+                <input type="checkbox" v-model="todo.done">
+                <!--true, false값이 지정될곳-->
+                <span v-bind:class="{'done-style':todo.done}">{{todo.text}} / 완료일:{{todo.doneDate}}</span> <!-- 클래스를 지정해줘서 css가 들어가게 함-->
+            </label>
+        </div>
+        <input type="text" v-model="addText" v-on:keyup.enter="addToDo" placeholder="할 일"> <!-- keyup.enter : 엔터가 눌려졌을때 실행하겠다 -->
+        <input type="text" v-model="addDate" v-on:keyup.enter="addDateFnc" placeholder="완료일(yyyyMMdd형식)">
+        <p>
+            <button v-on:click="clearToDo">처리 완료 삭제</button>
+            <button v-on:click="sortDate">완료일 정렬</button>
+            
+        </p>
+        
+        <p style="text-align: center;">🔥{{remaining}}건 중 {{todos.length}}건 할 일 남음🔥</p>  <!--false 값을 계산해서 넣어줌-->
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                todos: [
+                    {done: false, text: 'vue 공부하기'},
+                    {done: false, text: 'JS 박살내기'},
+                    {done: true, text: 'Java 뿌수기',doneDate:'20231231'},
+
+                ],
+                addText: '🍓',
+                addDate:'20230113'
+            },
+            methods: {
+                //🍓할일 input에 입력하고 엔테 누르면 값이 들어가는 함수
+                addToDo:function() {  //addText 에 값이 들어가면 todos에 값을 추가함 -> 객체 타입으로 들어가야함 
+                    this.todos.push({done:false, text: this.addText})
+                    this.addText ='';
+                },
+                //🍓처리 완료 삭제 버튼 누르면 삭제 되는 함수 
+                clearToDo:function(){
+                    this.todos = this.todos.filter(todo =>{
+                        return todo.done == false;
+                    })
+                    //filter로 done상태가 flase인 것을 뽑아내고 그것들을 다시 todos에 담아줘야지
+                    //상태가 false인 것을 지운 상태의 화면을 그려줄수있음
+                },
+                //🍓완료일 input에 입력하고 엔터 누르면 할일, 완료일 들어가도록
+                addDateFnc:function(){
+                    if(this.addText == ''){
+                        alert('💥할일을 입력하세욥💥')
+                        console.log(document.querySelector('input[placeholder="할일"]'))
+                        document.querySelector('input[placeholder="할 일"]').focus()
+                    }else{
+
+                        this.todos.push({done:true, text: this.addText,doneDate: this.addDate})
+                        this.addDate='';
+                        this.addText='';
+                
+                    }
+                },
+                //🍓완료일 정렬 버튼 누르면 완료일 기준으로 오름차순 정렬 되도록
+                sortDate:function(){
+                    return this.todos.sort(function(first,second){
+                        // if(first.doneDate < second.doneDate)
+                        // return -1
+                        // else
+                        // return 1
+                        return parseInt(first.doneDate) - parseInt(second.doneDate)
+                    })
+                }
+
+            },
+            computed:{
+                //🍓할 일이 몇건 남았는지 알려주는 메서드
+                remaining:function(){
+                    return this.todos.filter(todo => {
+                        return !todo.done;  //속성이 false인 값을 넘겨줌 -> filter는 false인 값을 모아놓은 배열을 만듬
+                    }).length  //필터에서 걸러진 false의 개수를 담은 배열의 개수(length)를 출력해줌  
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

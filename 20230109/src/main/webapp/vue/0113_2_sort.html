@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sort.html</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+</head>
+<style>
+    @font-face {
+        font-family: 'GangwonEdu_OTFBoldA';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    * {
+        font-family: 'GangwonEdu_OTFBoldA';
+
+    }
+</style>
+
+<body>
+    <script>
+        let numbers = [2, 4, 1, 7, 5]
+        console.log(numbers.sort())  //sort() : 배열을 정렬해줌 
+
+        let objs=[  //객체타입일때는 정렬 기준을 매개 값으로 넣어 줘야함 
+            {name:'Hong',score:22},
+            {name:'Park',score:21},
+            {name:'Sin',score:25},
+        ]
+        console.log(objs.sort(function(first,last){  //first: 첫번째 값 last: 두번째 값
+            // return first.score - last.score  //음수값이 반환되면 오름차순으로 정렬 됨
+            // return last.score - first.score  // 양수값이 반환되면 내림차군 정렬됨
+            if(first.score < last.score)
+            return -10;  //음수값이 반환 되면 오름차순
+            else
+            return 1;  //양수값이 반환되면 내차순
+        }))
+    </script>
+</body>
+
+</html>

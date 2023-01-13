@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zzang1.html</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+</head>
+<style>
+    @font-face {
+        font-family: 'GangwonEdu_OTFBoldA';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    * {
+        font-family: 'GangwonEdu_OTFBoldA';
+
+    }
+</style>
+
+<body>
+    <div id="app">
+        <!-- 🍓버튼 -->
+        <button v-on:click="sort_no">학생번호 순 정렬</button>
+        <button v-on:click="sort_name">학생이름 순 정렬</button>
+        <button v-on:click="sort_score">학생성적 순 정렬</button>
+        <hr>
+        <!-- 🍓리스트 -->
+        <select v-model="orderBy" v-on:change="changeOrder">
+            <option v-bind:value="option.val" v-for="option in opts">{{option.name}}</option>
+        </select>
+        <hr>
+        <!-- 🍓radio -->
+        <!-- <label> 학번 : <input type="radio" v-bind:value="opts[0].val" v-model="radiorder"></label>
+        <label> 이름 : <input type="radio" v-bind:value="opts[1].val" v-model="radiorder"></label>
+        <label> 성적 : <input type="radio" v-bind:value="opts[2].val" v-model="radiorder"></label> -->
+        
+        <!-- 📌교수님 방법 -->
+        <label> 학번 : <input type="radio" v-bind:value="no" v-model="radiorder"></label>
+        <label> 이름 : <input type="radio" v-bind:value="name" v-model="radiorder"></label>
+        <label> 성적 : <input type="radio" v-bind:value="score" v-model="radiorder"></label>
+        
+        
+        <ul>
+            <li v-for="member in list">{{member.id}} {{member.name}} {{member.score}}</li>
+
+        </ul>
+
+    </div>
+
+    <script>
+        let members = [{
+                id: 101,name: '홍', score: 70
+            },
+            {
+                id: 102, name: '김', score: 80
+            },
+            {
+                id: 103, name: '박',score: 95
+            },
+            {
+                id: 104, name: '신', score: 75
+            }
+        ]
+        let options = [{
+                val: 'no', name: '학번순'
+            },
+            {
+                val: 'name',name: '이름순'
+            },
+            {
+                val: 'score',name: '성적순'
+            },
+        ]
+        console.log(members.sort())
+
+        new Vue({
+            el: '#app',
+            data: {
+                list: members,
+                orderBy: 'no', //기본값이 학번
+                opts: options,
+                radiorder: 'score', //기본값이 성적
+                
+                //📌교수님 방법에 사용함
+                no:'no',
+                name:'name',
+                score:'score'
+
+            },
+            methods: {
+                //🍓이름순, 학번순, 성적순
+
+                //1️⃣학번 순
+                // sort_no:function(list){
+                // this.list.sort(function(first,last){
+                //     if(first.id < last.id)
+                //     return -12;
+                //     else
+                //     return 1;
+
+                // })
+                // },
+
+                //📌교수님 풀이 숫자면 - 써도 됨
+                sort_no: function () {
+                    return this.list.sort(function (first, second) {
+                        return first.id - second.id
+                    })
+                },
+
+                //2️⃣이름 순
+                //숫자가 아니면 등호로 사용 
+                sort_name: function () {
+                    this.list.sort(function (first, last) {
+                        if (first.name < last.name)
+                            return -1
+                        else
+                            return 1;
+                    })
+
+                },
+
+                //3️⃣성적 순
+                sort_score: function () {
+
+                    this.list.sort(function (first, last) {
+                        if (first.score < last.score)
+                            return -1;
+                        else
+                            return 1;
+                    })
+                },
+                //📌 교수님 풀이
+                // sort_score:function(){
+                //     return this.list.sort(function(first,second){
+                //          return first.score - second.score
+                //     })
+                // },
+
+                //4️⃣select
+                changeOrder: function () {
+                    console.log(this.orderBy)
+                    if (this.orderBy == 'no') {
+                        this.sort_no()
+                    } else if (this.orderBy == 'name') {
+                        this.sort_name()
+                    } else if (this.orderBy == 'score') {
+                        this.sort_score()
+                    }
+                }
+
+            },
+            watch: { //radiorder가 바껴지면 실행할 함수
+                radiorder: function (arg,arg2) { //배개변수 1: 새로운 값 // 매개변수2: 이전의 값  
+                    console.log(arg,arg2)
+                    if (arg == 'no') {
+                        this.sort_no()
+                    } else if (arg == 'name') {
+                        this.sort_name()
+                    } else if (arg == 'score') {
+                        this.sort_score()
+                    }
+                    
+                    //💥💥💥
+                    //console.log(arg) 
+                    // arg가 들어오는 매개 변수이기때문에 this를 적지 않아도 됨!
+                      //매개 값을 읽어 올때는 this필요 없음!!!!
+
+                    //console.log(this) 
+                    // this 는 data/methods(sort~~)/watch(radiorder)를 읽어 오는 것이고 
+
+                }
+                
+            }
+        })
+    </script>
+</body>
+
+</html>

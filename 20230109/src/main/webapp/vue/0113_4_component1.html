@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>component1.html</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+</head>
+<style>
+    @font-face {
+        font-family: 'GangwonEdu_OTFBoldA';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    * {
+        font-family: 'GangwonEdu_OTFBoldA';
+
+    }
+   
+</style>
+
+<body>
+    <table>
+
+    </table>
+    <div id="app">
+        <table-component></table-component>
+        <ul-component></ul-component>
+    </div>
+    <div id="app2">
+        <table-component></table-component>
+        <ul-component ></ul-component>
+
+    </div>
+
+    <script>
+        // 🍓component : 똑같은 작업을 반복하지 않고 component를 하나 만들어서 필요할때마다 사용하도록 함 //메소드, 워치, 컴퓨트 같은 속성들이 그대로 적용이 됨
+        //전역에서 사용할수 있는  ▶ 전역 component
+        Vue.component('table-component',{   //컴포넌트 이름과 , 컴포넌트에 사용되어질 템플릿
+            template: `
+                <table>
+                    <tr>
+                        <td>Hello👋</td>
+                        <td>Nice👍</td>
+                    </tr>
+                </table>
+            `
+        })  
+        //각각의 인스턴스에서만 사용 할 ▶ 지역 component
+        //필요한 인스턴스만큼 Vue를 선언해서 사용 
+        new Vue({
+            el: '#app',
+            components:{  //components를 지정해서 사용이 가능함
+                'ul-component':{
+                    template:`
+                    <ul style="list-style: none;">
+                        <li >apple🍏</li>
+                        <li>banana🍌</li>
+                    </ul>
+                        `
+                }
+            }
+        })
+        new Vue({
+            el: '#app2'
+        })
+    </script>
+</body>
+
+</html>

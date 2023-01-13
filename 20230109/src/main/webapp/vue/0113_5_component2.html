@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>component2.html</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+</head>
+<style>
+    @font-face {
+        font-family: 'GangwonEdu_OTFBoldA';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    * {
+        font-family: 'GangwonEdu_OTFBoldA';
+
+    }
+</style>
+
+<body>
+    <div id="app">
+        <my-component></my-component>
+        <your-component></your-component>
+    </div>
+
+    
+    <script>
+        var youComponent={
+            template:`
+            <ul>
+                <li>🍏</li>
+                <li>🍌</li>
+                <li>{{msg}}</li>
+            </ul>
+            `,
+            data:function(){
+                return{
+                    msg:'🍒'
+                }
+            }
+
+        }
+        new Vue({
+            el: '#app',
+            // template:'<div id="new"><p>Hello👋</p></div>',  //이렇게 쓰면 아이디가 app인 곳에 템플릿을 덮어서 사용하겠다
+            components: {
+                'my-component': {
+                    template: `
+                    <p class="my-comp">카운터
+                        <button v-on:click="addOne">추가</button>
+                        {{count}} <br>
+                        <span>{{message}}</span>
+                    </p>
+                    `,
+                    methods: { //이 components안에서만 사용 할 아이들이기 때문에 components안에서 정의를 해줘야함 
+                        addOne: function () {
+                            this.count++;
+                        }
+                    },
+                    data: function () { //함수모양으로 정의해야하고 객체 타입으로 반환💥
+                        return {
+                            count: 0,
+                            message: 'Hello👋'
+                        }
+                    }
+
+                },
+                'your-component': youComponent
+
+            },
+
+
+        })
+    </script>
+</body>
+
+</html>

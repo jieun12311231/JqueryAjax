@@ -20,10 +20,10 @@
         <table border="1">
             <tbody>
                 <th colspan="3">🌳떡잎마을🌳</th>
-                <tr v-for="tr in friends">
-                    <td>{{tr.name}}</td>
-                    <td>{{tr.age}}</td>
-                    <td><button v-on:click="delFriend(friendName)">삭제</button></td>
+                <tr v-for="friend in friends">
+                    <td>{{friend.name}}</td>
+                    <td>{{friend.age}}</td>
+                    <td><button v-on:click="delFriend(friend.name)">삭제</button></td>
                 </tr>
             </tbody>
         </table>
@@ -47,24 +47,13 @@
                         name : this.friendName,
                         age : this.friendAge
                     })
-                    this.friendName='';
-                    this.friendAge='';
+                    // this.friendName='';
+                    // this.friendAge='';
                 },
                 delFriend:function(friendName){
-                    // this.friends.forEach((item,idx)=>{
-                    //     if(item.name == this.friends[idx].name){
-                    //     console.log(item.name)
-                    //     // this.friends.splice(idx,1)
-                    //     }
-                    // })
-
-                    // for(let i=0; i<this.friends.length; i++){
-                    //     if(this.friends[i].name == this.friendName  && this.friends[i].age == this.friendAge){
-                    //         this.friends.splice(i,1)
-                    //     }
-                    // }
-                    for(let i=0; i<this.friends.length; i++){
-                        if(this.friends[i].name == friendName){
+                    for(let i = 0; i < this.friends.length; i++){
+                        console.log(friendName)
+                        if(friendName == this.friends[i].name){
                             this.friends.splice(i,1)
                             break;
                         }
