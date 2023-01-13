@@ -115,6 +115,8 @@ public class FrontController extends HttpServlet {
 		//리스트 등록
 		map.put("/noticeInsertAjax.do", new NoticeInsertAjax());
 		
+		//book vue를 위한 json데이터
+//		map.put("/bookListAjax.do", new BookListAjax());
 	}
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+</head>
+<style>
+    @font-face {
+        font-family: 'GangwonEdu_OTFBoldA';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    * {
+        font-family: 'GangwonEdu_OTFBoldA';
+
+    }
+    li{
+        list-style: '✔';
+    }
+</style>
+<script type="text/javascript">
+    let originData = [
+        ['메뉴', '투표수'],
+        ['포케🥗', 11],
+        ['치킨🍗', 8],
+        ['닭갈비🍘', 5],
+        ['갈비탕🍖', 6],
+        ['파스타🍝', 2],
+        ['라멘🍜', 3]
+    ]
+
+
+    google.charts.load('current', {
+        'packages': ['corechart']
+    });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        var data = google.visualization.arrayToDataTable(originData);
+
+        var options = {
+            title: '🥗🍜추천메뉴🥣🍛'
+
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+    }
+</script>
+
+
+<body>
+    <div id="piechart" style="width: 900px; height: 500px;"></div>
+    <ul id="list">
+        <li v-for="(menu,idx) in origin" v-if="idx>0">
+            {{menu[0]}} : {{menu[1]}}
+            <br><button v-on:click="addFood(menu,1)">👍</button>
+            <button v-on:click="addFood(menu,-1)">👎</button>
+        </li>
+    </ul>
+    <script>
+        new Vue({
+            el: '#list',
+            data: {
+                origin: originData
+
+            },
+            methods: {
+                addFood: function (arg=[], arg2 = 1) { //arg: 메뉴이름(배열형태), arg2 : 투표수
+                    console.log(arg2)
+                    console.log(arg)
+                    this.origin.forEach((menu, idx) => {
+                        if (menu[0] == arg[0]) {  //찾는 메뉴가 맞으면 
+                            let newObj = [menu[0], menu[1] + arg2]  //메뉴는 그대로 있고 menu[1]인 투표수에 
+                            this.origin.splice(idx, 1, newObj) //배열값을 변화시킴 //기존 위치에 있는 값을 새로운 값으로 변경 시킴
+                        }
+                    })
+                    drawChart() //변화시킨 값으로 화면에 새로 그려줌
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
