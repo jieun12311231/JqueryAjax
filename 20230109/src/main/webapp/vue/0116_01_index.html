@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js 애완용품 샵</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.js"></script> <!-- fetch같은거,, 더 쓰기 편하다고-->
+    <script src="https://unpkg.com/vue@2"></script>
+
+    <link rel="stylesheet" type="text/css" href="assets/css/app.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+</head>
+<style>
+    @font-face {
+        font-family: 'GangwonEdu_OTFBoldA';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    * {
+        font-family: 'GangwonEdu_OTFBoldA';
+
+    }
+</style>
+
+
+<body>
+    <div id="app">
+
+        <header>
+            <div class="navbar navbar-default">
+                <div class="navbar-header">
+                    <h1>🐶{{sitename}}🐺</h1>
+
+                </div>
+
+                <div class="nav navbar-nav navbar-right cart">
+                    <button class="btn btn-primary btn-lg" v-on:click="showCheckout">
+                        <span class="glyphicon glyphicon-shopping-cart"> {{cartItemCount}}</span>
+                        <span>체크아웃</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+        <main>
+            <div style="text-align: center;">
+
+                <!-- <label>상품번호순<input type="radio" v-bind:value="id" v-model="radioSort"></label>
+                <label>상품명순<input type="radio" v-bind:value="title" v-model="radioSort"></label>
+                <label>상품가격순<input type="radio" v-bind:value="price" v-model="radioSort"></label> -->
+                
+                <!--📌교수님 방법  1) -->
+                <!-- <label for="order_id">상품번호순<input type="radio"  id="order_id" v-bind:value="id" v-model="orderby"></label>
+                    <label for="order_title">상품명순<input type="radio" id="order_title" v-bind:value="title" v-model="orderby"></label>
+                    <label for="order_price">상품가격순<input type="radio" id="order_price" v-bind:value="price" v-model="orderby"></label> -->
+                <!--📌교수님 방법  2) 반복문 돌려서 label만들기-->
+                <span v-for="orderCase in orderByCase">
+                    <label v-bind:for="orderCase">{{orderCase}}순으로 정렬  
+                       <input type="radio" v-bind:id="orderCase" v-bind:value="orderCase" v-model="orderby">&nbsp;&nbsp;&nbsp;&nbsp;
+                    </label>
+                </span>
+            </div>
+            <div v-if="showProduct">
+                <div v-for="product in products">
+                    <div class="row">
+                        <div class="col-md-2 col-md-offset-1">
+                            <figure>
+                                <img v-bind:src="product.image" class="product">
+                            </figure>
+                        </div>
+                        <div class="col-md-6 col-md-offset-2 description">
+                            <h1 v-text="product.title"></h1>
+                            <p v-html="product.description"></p> <!-- em 태그 적용시키기 위해서 v-html를 사용-->
+                            <!--formatPrice 가격을 필터링 된것으로 보여주겠다-->
+                            <p class="price">{{product.price | formatPrice}}</p>
+                            <!-- 재고가 있으면 보여줄 버튼 // 상품을 매개값으로 넣어줌 반복문 안에서 뽑아진 하나의 상품에대한 정보  product-->
+                            <button class="btn btn-primary btn-lg" v-if="canAddToCart(product)"
+                                v-on:click="addToCart(product)">장바구니
+                                담기</button>
+                            <!-- 재고가 없으면 보여줄 버튼-->
+                            <button class="btn btn-primary btn-lg" disabled="true" v-else>장바구니 담기</button>
+
+                            <span class="inventory-message"
+                                v-if="product.availableInventory == cartCount(product.id)">💥품절💥</span>
+                            <span class="inventory-message"
+                                v-else-if="product.availableInventory - cartCount(product.id) > 2 ">{{product.availableInventory - cartCount(product.id)}}개
+                                남았습니다.</span>
+                            <span class="inventory-message" v-else>💥품절임박💥 지금 구매하세요
+                                ({{product.availableInventory - cartCount(product.id)}}개)</span>
+                            <!-- 별점/평점 -->
+                            <div class="rating">
+                                <span v-bind:class="{'rating-active':checkRating(n , product.rating)}"
+                                    v-for="n in 5">☆</span>
+                            </div>
+                        </div>
+                    </div><!-- class="row" 끝. -->
+                    <hr>
+                </div>
+                <!--v-for="product in products" 끝-->
+            </div>
+            <!--v-id="ShowProduct" 끝-->
+            <div v-else>
+                <!--체크아웃 화면 시작-->
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">애완용품샵 체크아웃</div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <h4><strong>정보를 입력하세요</strong></h4>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <strong>이름</strong>
+                                    <input v-model="order.firstName" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <strong>성</strong>
+                                    <input v-model="order.lastName" class="form-control">
+                                </div>
+                            </div>
+                            <!-- 주소 -->
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <strong>주소</strong>
+                                    <input v-model="order.address" class="form-control">
+                                </div>
+                            </div>
+                            <!-- 도시 -->
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <strong>도시</strong>
+                                    <input v-model="order.city" class="form-control">
+                                </div>
+                            </div>
+                            <!-- 주 -->
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <strong>주</strong>
+                                    <select v-model="order.state" class="form-control">
+                                        <option disabled>주 ::</option>
+                                        <option v-for="(state, key) in states" v-bind:value="state">{{key}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- 우편번호 -->
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <strong>우편번호</strong>
+                                    <input v-model.number="order.zip" class="form-control">
+                                    <!--숫자만 넣고싶으면 number포맷으로 지정-->
+                                </div>
+                            </div>
+                            <!-- 선물 옵션 -->
+                            <div class="form-group">
+                                <div class="col-md-6 boxes">
+                                    <input type="checkbox" id="gift" value="true" v-bind:true-value="order.sendGift"
+                                        v-bind:false-value="order.dontSendGift" v-model="order.gift">
+                                    <label for="gift">🎁선물 여부🎁 </label> <!-- for : id가 gift인 것의 라벨이라는 의미 -->
+                                </div>
+                            </div>
+                            <!-- 자택/직장 선택 -->
+                            <div class="form-group">
+                                <div class="col-md-6 boxes">
+                                    <input type="radio" name="" id="home" v-bind:value="order.home"
+                                        v-model="order.method">
+                                    <label for="hame">자택</label>
+                                    <input type="radio" name="" id="business" v-bind:value="order.business"
+                                        v-model="order.method">
+                                    <label for="hame">직장</label>
+                                </div>
+                            </div>
+                            <!-- 제출 -->
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-primary submit"
+                                        v-on:click="submitForm">주문하기</button>
+                                </div>
+                            </div>
+                            <!--  입력한 정보집계 -->
+                            <div class="col-md-12 verify">
+                                <pre>
+                                        이름 : {{order.firstName}}
+                                        성 : {{order.lastName}}
+                                        주소 : {{order.address}}
+                                        도시: {{order.city}}
+                                        우편번호 : {{order.zip}}
+                                        주 : {{order.state}}
+                                        배송지 : {{order.method}}
+                                        선물 여부 : {{order.gift}}
+
+                                    </pre>
+                            </div>
+                        </div>
+                        <!--class="panel-body" 끝-->
+                    </div>
+                    <!--class="panel panel-info" 끝-->
+                </div>
+                <!--체크아웃 화면 종료 class="col-md-10 col-md-offset-1"-->
+            </div> <!-- v-else  끝-->
+    </div>
+    </div>
+
+    </main>
+    </div>
+
+    <script>
+        var APP_LOG_LIFECYCLE_EVENTS = true;
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                sitename: '지은이의 애완용품 샵',
+                //상품의 속성 -> 샘플로 하나만 만들어보는것이라서 json가지고 오게되면 필요없음
+                products: [],
+                // {
+                // id: 1001,
+                // title: '고양이 사료, 25파운드',
+                // description: '당신의 고양이를 위한 <b><em>거부할수없는</em></b> 유기농 25파운드 사료입니다',
+                // price: 123456, // $20.00 달러로 표기 할 예정
+                // image: 'assets/images/product-fullsize.png',
+                // availableInventory: 5, // 가용 재고
+                // },
+                //장바구니의 속성
+                cart: [], //배열이기때문에 length를 통해서 개수를 알수있음
+                showProduct: true, //얘의 true , false에 따라 화면에 주문창이 보여짐
+                states: {
+                    AL: '알라바마',
+                    AK: '알래스카',
+                    AR: '애리조나',
+                    CA: '캘리포니아',
+                    NV: '네바다'
+                },
+                //배송지 입력하기위한 속성
+                order: {
+                    firstName: 'Erick',
+                    lastName: 'Han',
+                    address: '123 Street Ln',
+                    city: '',
+                    zip: '',
+                    state: '',
+                    method: '자택주소', //자택으로 보낼지, 회사로 보낼지
+                    business: '직장 주소',
+                    home: '자택 주소',
+                    gift: '🎁선물로 보내기🎁',
+                    sendGift: '🎁선물로 보내기🎁',
+                    dontSendGift: '선물로 보내지않기',
+
+                },
+                radioSort: 'id',
+                // id: 'id',
+                // title: 'title',
+                // price: 'price',
+
+                orderby: 'id',
+                orderByCase:['id','title','price']
+
+            },
+            methods: {
+                //🍓3.장바구니에 추가하는 함수
+                addToCart: function (aProduct) {
+                    this.cart.push(aProduct.id);
+                },
+                //🍓6.showProduct의 값에 따라 화면이 보여짐 
+                showCheckout: function () {
+                    this.showProduct = this.showProduct ? false : true;
+                    console.log(this.showProduct)
+                    //false이면 체크아웃 화면. true이면 기존 상품 화면
+                },
+                //🍓7. 제출 버튼 누르면 submit 되는 버튼
+                submitForm: function () {
+                    alert('제출완')
+                },
+                //🍓5.가용재고 확인  10.
+                canAddToCart: function (aProduct) {
+                    //return this.product.availableInventory > this.cartItemCount; //true를 반환하면 버튼이 disabled로 바뀜
+
+                    //json에서 데이터를 가지고 오면서 상품마다 availableInventory을 가지고 와야하기때문에 매개값으로 받아와서 해야함
+                    return aProduct.availableInventory > this.cartCount(aProduct.id);
+                },
+                //🍓8. 남은 재고 출력, 품절되면 메시지 띄우기  11.
+                cartCount: function (id) { //상품별로 받아와야하기때문에 매개값을 받아옴
+                    var count = 0;
+                    // console.log(this)
+                    for (let i = 0; i < this.cart.length; i++) {
+
+                        //해당되는 상품에 재고를 알기위해 
+                        if (this.cart[i] == id) {
+                            count++
+                        }
+                    }
+                    return count;
+                },
+                //🍓12. 상품의 rating 개수만큼 true 값이 반환되도록 n는  반복문의 1~5의 값 true가 반환되면 별이 출력되고  false면 빈별 출력
+                checkRating: function (n, rating) {
+                    return rating >= n; //rating 개수 만큼만 true를 반환하기
+                },
+                // //상품 번호 순으로 정렬
+                // sortId: function () {
+                //     console.log(this.products)
+                //     this.products.sort(function (first, second) {
+                //         return parseInt(first.id) - parseInt(second.id)
+                //     })
+
+
+                // },
+                // //상품 이름으로 정렬
+                // sortName: function () {
+                //     console.log(this.products)
+                //     this.products.sort(function (first, second) {
+                //         if (first.title < second.title)
+                //             return -1
+                //         else
+                //             return 1
+                //         // return parseInt(first.title) - parseInt(second.title)
+                //     })
+
+                // },
+                // //가격순으로 정렬
+                // sortPrice: function () {
+                //     console.log(this.products)
+                //     this.products.sort(function (first, second) {
+                //         return parseInt(first.price) - parseInt(second.price)
+                //     })
+                // }
+
+            },
+            //🍓정렬하기
+            watch: {
+                // radioSort: function (arg) {
+                //     console.log(arg)
+                //     if (arg == 'id') {
+                //         this.sortId()
+                //     } else if (arg == 'title') {
+                //         this.sortName()
+                //     } else if (arg == 'price') {
+                //         this.sortPrice()
+                //     }
+
+                //📌교수님 풀이
+                orderby: function (newValue, orderValue) {
+                    console.log(newValue, orderValue)
+                    var orderByFunc = function (first, second) {
+                        return first.price - second.price
+                    }
+                    if (newValue == 'id') { //상품 아이디 순
+                        orderByFunc = function (first, second) {
+                            return first.id - second.id
+                        }
+                    } else if (newValue == 'title') { //상품명
+                        orderByFunc = function (first, second) {
+                            return first.title < second.title ? -1 : 1
+                        }
+                    }
+                    this.products.sort(orderByFunc) //sort 호출 함수
+                }
+            },
+            computed: { //computed는 속성이라서 함수의 매개값을 넣지못함
+                //🍓4.장바구니 담기 버튼을 누르면 카트에 담긴 개수를 반환해서 보여줌
+                cartItemCount: function () {
+                    return this.cart.length ? this.cart.length :
+                        0 //카트가 가지고있는 값의 길이를 반환 // 값이 있으면 값을 보여주고 없으면 0을 반환
+                }
+            },
+            filters: {
+                //🍓1.가격이 들어오면 $20.00 형태로 만들어주는 함수 정의
+                formatPrice: function (price) {
+                    //=> $23456.00 형태로 들로면 세자리마다 ' , ' 들어가야함 
+                    if (price > 99999) { //=> 999.99 형태 얘 보다 큰 값으면 , 가 들어가야함
+                        //뒤에서 부터 찾아와야하기때문에 역순으로 처리하는것이 편함
+                        var priceStr = (price / 100).toFixed(2)
+                        var priceAry = priceStr.split('')
+                            .reverse() //문자열로 만든 가격을 문자열로 바꾸고 배열로 만들어준다음 역순으로 바꿔줌
+                        console.log(priceAry)
+                        var index = 3; //3은 2,000.00 -> .00 3자리를 의미 
+                        while (priceAry.length > index +
+                            3) { //index + 3 -> index =.00 / index+3 =000  => 여섯번째가 되면 그 자리에 , 를 넣겠다
+                            priceAry.splice(index + 3, 0, ',')
+                            index += 4 //000, -> ,포함 4자리이기때문에 4자리 앞에서 , 를 넣으라는 의미 
+                        }
+                        return '$' + (priceAry.reverse().join(''))
+                    } else {
+                        return '$' + (price / 100).toFixed(2) //toFixed 소수점 보여주는것 => 소수점 2자리 
+                    }
+                },
+            }, //🍓2.인스턴스의 라이프 사이클
+            beforeCreate: function () {
+                if (APP_LOG_LIFECYCLE_EVENTS) {
+                    console.log("✅beforeCreate");
+                }
+            },
+            created: function () {
+                if (APP_LOG_LIFECYCLE_EVENTS) {
+                    console.log("✅created");
+                }
+                //🍓9.
+                axios.get('./products.json')
+                    .then(result => {
+                        console.log(result)
+                        this.products = result.data.products;
+                    })
+            },
+            beforeMount: function () {
+                if (APP_LOG_LIFECYCLE_EVENTS) {
+                    console.log("✅beforeMount");
+                }
+            },
+            mounted: function () {
+                if (APP_LOG_LIFECYCLE_EVENTS) {
+                    console.log("✅mounted");
+                }
+            },
+            beforeUpdate: function () { //속성이 바뀌게 되면 발생하는 이벤트 
+                if (APP_LOG_LIFECYCLE_EVENTS) {
+                    console.log("✅beforeUpdate");
+                }
+            },
+            updated: function () { //속성이 바뀌게 되면 발생하는 이벤트 => 화면이 새로 그려짐
+                if (APP_LOG_LIFECYCLE_EVENTS) {
+                    console.log("✅updated");
+                }
+            },
+            beforeDestroy: function () { //
+                if (APP_LOG_LIFECYCLE_EVENTS) {
+                    console.log("✅beforeDestroy ");
+                }
+            },
+            destroyed: function () { //인스턴스가 종료 되면 호출 됨
+                if (APP_LOG_LIFECYCLE_EVENTS) {
+                    console.log("✅destroyed");
+                }
+            }
+        })
+
+
+        // vm.sitename = '새로운 사이트 이름..!'
+        // vm.$destroy()  //-> 얘가 있으면 인스턴스의 사이클이 종료되기때문에 인스턴스 밖에서 선언한것은 적용되지않음
+        // vm.sitename = "종료후 수정중 "  //destroy 후 선언을 하는것은 적용되지않음
+    </script>
+</body>
+
+</html>

@@ -5,7 +5,7 @@ bookVue.js
 const memberAry = [];
 
 const addComponent = {
-    template: `
+    template : `
         <div id="addMember">
             <table class="table">
                 <tr>
@@ -44,8 +44,8 @@ const addComponent = {
                 </tr>
             </table>
         </div>
-    
-    `,
+     `,
+    // name: 'addcom',
     data: function () {
         return {
             //라벨
@@ -92,7 +92,7 @@ const addComponent = {
         selectedMemberDel: function () {
             //선택삭제 버튼은 addComponent// 지워야하는 대상은 listComponent   =>
             console.log(this.$parent.$children[1].targetMember) //this : listComponent
-            console.log(this) //this : listComponent
+            console.log(this) 
             let targetList = this.$parent.$children[1].targetMember //삭제할 아이디가 담겨있는 리스트
             targetList.forEach((id) => {
                 fetch('../memberDelAjax.do?id=' + id)
@@ -101,8 +101,8 @@ const addComponent = {
                         if (result.retCode == 'Success') {
                             this.members.forEach((member, idx) => {
                                 if (member.memberId == id) {
-                                    // this.members.splice(idx, 1)
-                                    // targetList.length=0;
+                                    this.members.splice(idx, 1)
+                                    targetList.length=0;
                                 }
                             })
 
@@ -159,6 +159,7 @@ const listComponent = {
     },
     methods: { //💥
         delMember: function (id) {
+            console.log(this)
             console.log(id)
             fetch('../memberDelAjax.do?id=' + id) //💥경로 주의💥
                 .then(result => result.json())

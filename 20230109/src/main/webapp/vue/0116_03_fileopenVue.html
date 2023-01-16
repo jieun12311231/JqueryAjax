@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fileOpen.html</title>
+    <script src="https://unpkg.com/vue@2"></script>
+
+</head>
+<style>
+    @font-face {
+        font-family: 'GangwonEdu_OTFBoldA';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    * {
+        font-family: 'GangwonEdu_OTFBoldA';
+
+    }
+</style>
+
+<body>
+
+    <h2>json 파일 읽기</h2>
+    <input type="file" id="fileopen">
+    <br>
+    <div id="app">
+        
+        <table border="1px">
+            <thead>
+                <tr>
+                    <th>상품 번호</th>
+                    <th>상품 명</th>
+                    <th>상품 가격</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="product in products">
+                    <td>{{product.id}}</td>
+                    <td>{{product.title}}</td>
+                    <td>{{product.price}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <script>
+        //🍓자바스크립트로 하는 방법 
+        let fileobj = document.getElementById('fileopen')
+        fileobj.onchange = function (e) {
+            let file = e.target.files[0];  //첫번째 파일의 값
+            console.log(file)
+            if(file){
+                var reader = new FileReader();  //로컬에 있는 파일을 읽기위해서
+                reader.onload = function(ee){
+                    let result =JSON.parse(ee.target.result)  //json을 객체타입으로 변환
+                    
+                    console.log(result)
+                
+                  console.log(vm.$data.products =result.products)  //$data하면 data속성을 가지고 옴
+                
+               
+                }   
+                reader.readAsText(file)  //이것을 호출해야지 onload가 실행이됨 -> text형식으로 파일을 읽음
+
+            }
+        }
+
+        //Vue로 하는 방법
+      var vm = new Vue({
+            el:'#app',
+            data:{
+                products:[],
+            },
+            methods:{},
+            computed:{},
+
+        })
+    </script>
+
+</body>
+
+</html>
