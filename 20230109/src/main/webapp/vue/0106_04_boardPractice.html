@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>boardPractice.html</title>
+    <script src="https://unpkg.com/vue@2"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+
+</head>
+
+<body>
+    <div id="app">
+        <h2>🍓간단한 게시판🍓</h2>
+        <input type="file" @change="loadData"> <!-- v-on:change  == @change -->
+        <my-board-list v-bind:object="dataArray" v-on:board-delete="boardDelete" v-on:board-read="boardRead"  v-if="listOk">
+        </my-board-list>
+        <my-board-read v-bind:object="boardInfo" v-on:board-list="boardList" v-if="readOk"></my-board-read>
+
+    </div>
+
+    <script>
+        //목록조회 component
+        const MyBoardList = {
+            template: `
+                <div>
+                    <table id="list">
+                      
+                            <tr>
+                                <th>글 번호</th>
+                                <th>글 제목</th>
+                                <th>조회수</th>
+                                <th>삭제</th>
+                            </tr>
+                      
+                    
+                        <tr v-for="board in object">
+                            <td>{{board.no}}</td>
+                            <td v-on:click="boardReadChild(board)">{{board.title}}</td>
+                            <td>{{board.view}}</td>
+                            <td><button v-on:click="boardDelChild(board.no)">삭제</button></td>
+                        </tr>
+                    
+                        </table>
+                    
+                </div>`,
+            props: ['object'], // 상위요소에있는 object를 안에서 쓰고싶으면
+            methods: {
+                //삭제
+                boardDelChild: function (no) {
+                    //상위에 있는 이벤트를 호출
+                    this.$emit('board-delete', no) //$emit 사용자가 임의로 정한 함수를 호출하겠다 
+                },
+                boardReadChild: function (info) {
+                    this.$emit('board-read', info)  // my-board-read를 호출하고 매개 값으로 글 정보를 넘겨줌
+                }
+            }
+
+        }
+        //한건 조회 component
+        const MyBoardRead = {
+            template: `
+            <div>
+                <table id="list">
+                    <tr>
+                        <td>글제목</td>
+                        <td>{{object.title}}</td>
+                        
+                    </tr>
+                    <tr>
+                        <td colspan="2">{{object.contect}}</td>
+                        </tr>
+                    </table>
+                    <button v-on:click="bookListChild">목록보기</button>
+
+                </div>
+            
+            `,
+            props: ['object'],
+            methods: {
+                bookListChild:function(){
+                    this.$emit('board-list')
+                }
+            },
+            data:{
+                
+            }
+        }
+        //Root Component
+        new Vue({
+            el: '#app',
+            data: {
+                dataArray: [], //loadData가 실행되면 값이 이 쪽으로 들어감 
+                boardInfo: {}, //
+                listOk:true,
+                readOk:false
+            },
+            methods: {
+                loadData: function (e) {
+                    var file = e.target.files[0]
+                    var vm = this //this = Vue
+                    console.log(vm)
+                    if (file) {
+                        var reader = new FileReader();
+                        reader.readAsText(file)
+                        reader.onload = function (e) {
+                            console.log(e.target.result)
+                            let resultAry = JSON.parse(e.target.result)
+                            // console.log(this)  //this = FileReader
+                            vm.dataArray = resultAry.boards
+                        }
+                    }
+                },
+                boardDelete: function (no) { //상위에 있는 이벤트에 함수를 정의함// 데이터가 상위에 있기때문에 상위에서 지워줘야함
+                    for (let i = 0; i < this.dataArray.length; i++) {
+                        if (this.dataArray[i].no == no) {
+                            this.dataArray.splice(i, 1);
+
+                        }
+                    }
+                },
+                boardRead: function (info) { // boardInfo 에 값을 담음  
+                    this.boardInfo = info
+                    console.log(info)
+                    //boardRead이 호출이 되면
+                    this.listOk = false
+                    this.readOk = true
+                    for(let i=0; i<this.dataArray.length;i++){
+                        if(this.dataArray[i].no == info.no){
+                            this.dataArray[i].view += 1
+                        }
+                    }
+                },
+                boardList: function(){
+                    console.log(this)
+                    this.listOk = true
+                    this.readOk = false
+                }
+            },
+            components: {
+                'my-board-list': MyBoardList,// 목록 보여주기
+                'my-board-read': MyBoardRead  //상세보기 
+            }
+        })
+    </script>
+</body>
+
+</html>
