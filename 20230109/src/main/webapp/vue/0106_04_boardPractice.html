@@ -15,9 +15,13 @@
     <div id="app">
         <h2>🍓간단한 게시판🍓</h2>
         <input type="file" @change="loadData"> <!-- v-on:change  == @change -->
-        <my-board-list v-bind:object="dataArray" v-on:board-delete="boardDelete" v-on:board-read="boardRead"  v-if="listOk">
+        <my-board-list v-on:board-write="boardWrite" v-bind:object="dataArray" v-on:board-delete="boardDelete"
+            v-on:board-read="boardRead" v-if="listOk" v-on:list-save="boardListSave">
         </my-board-list>
         <my-board-read v-bind:object="boardInfo" v-on:board-list="boardList" v-if="readOk"></my-board-read>
+        <my-board-write v-if="writeOk" v-on:board-list="boardList" v-on:board-save="boardSave">
+
+        </my-board-write>
 
     </div>
 
@@ -42,8 +46,9 @@
                             <td>{{board.view}}</td>
                             <td><button v-on:click="boardDelChild(board.no)">삭제</button></td>
                         </tr>
-                    
-                        </table>
+                    </table>
+                    <button v-on:click="boardWriteChild">글쓰기</button>
+                    <button v-on:click="boardListSave">게시글 파일로 저장</button>
                     
                 </div>`,
             props: ['object'], // 상위요소에있는 object를 안에서 쓰고싶으면
@@ -54,7 +59,13 @@
                     this.$emit('board-delete', no) //$emit 사용자가 임의로 정한 함수를 호출하겠다 
                 },
                 boardReadChild: function (info) {
-                    this.$emit('board-read', info)  // my-board-read를 호출하고 매개 값으로 글 정보를 넘겨줌
+                    this.$emit('board-read', info) // my-board-read를 호출하고 매개 값으로 글 정보를 넘겨줌
+                },
+                boardWriteChild: function () { //등록하는 화면 보여주기 
+                    this.$emit('board-write') //하위에서 상위 호출하고 싶으면 emit
+                },
+                boardListSave: function () {
+                    this.$emit('list-save')
                 }
             }
 
@@ -70,22 +81,55 @@
                         
                     </tr>
                     <tr>
-                        <td colspan="2">{{object.contect}}</td>
+                        <td colspan="2">{{object.content}}</td>
                         </tr>
                     </table>
-                    <button v-on:click="bookListChild">목록보기</button>
+                    <button v-on:click="boardListChild">목록보기</button>
 
                 </div>
             
             `,
             props: ['object'],
             methods: {
-                bookListChild:function(){
+                boardListChild: function () {
                     this.$emit('board-list')
                 }
+            }
+        }
+        //🍓글쓰기 component
+        const MyBoardWrite = {
+            template: `
+                <div>
+                    <table id="list">
+                        <tr>
+                            <td>글제목
+                            <input type="text" v-model="title"></td>
+                            </tr>
+                            <tr>
+                                <td colsapn="2"><textarea v-model="content"></textarea></td>
+                                </tr>
+                        </table>
+                        <button v-on:click="boardListChild">목록</button>
+                        <button v-on:click="boardSaveChild">저장</button>
+                    </div>
+            
+            `,
+            data: function () {
+                return {
+                    title: '테스트',
+                    content: '테스트 내용입니다'
+                }
             },
-            data:{
-                
+            methods: {
+                boardListChild: function () { //상취컴포넌트 호출
+                    this.$emit('board-list')
+                },
+                boardSaveChild: function () { //상위의 dataArray에 값이 들어가야함
+                    this.$emit('board-save', this.title, this.content) //title과 content를 받아와서 글을 등록
+                },
+                boardWriteChild: function () { //등록하는 화면 보여주기 
+                    this.$emit('board-write') //하위에서 상위 호출하고 싶으면 emit
+                }
             }
         }
         //Root Component
@@ -94,8 +138,9 @@
             data: {
                 dataArray: [], //loadData가 실행되면 값이 이 쪽으로 들어감 
                 boardInfo: {}, //
-                listOk:true,
-                readOk:false
+                listOk: true, //제일 처음에는 목록만 볼수있돌독
+                readOk: false,
+                writeOk: false
             },
             methods: {
                 loadData: function (e) {
@@ -127,23 +172,81 @@
                     //boardRead이 호출이 되면
                     this.listOk = false
                     this.readOk = true
-                    for(let i=0; i<this.dataArray.length;i++){
-                        if(this.dataArray[i].no == info.no){
+                    this.writeOk = false
+                    for (let i = 0; i < this.dataArray.length; i++) {
+                        if (this.dataArray[i].no == info.no) {
                             this.dataArray[i].view += 1
                         }
                     }
                 },
-                boardList: function(){
+                boardList: function () {
                     console.log(this)
                     this.listOk = true
                     this.readOk = false
+                    this.writeOk = false
+                },
+                boardWrite: function () {
+                    this.writeOk = true
+                    this.readOk = false
+                    this.listOk = false
+                },
+                //글 저장
+                boardSave: function (title, content) {
+                    let no = 1 //시퀀스 추가를 위해
+                    if (this.dataArray.length != 0) {
+                        //ary=[{no:1,title:'test'},{no:1,title:'test2'}]
+                        no = parseInt(this.dataArray[this.dataArray.length - 1].no) +
+                            1 //제일 마지막 데이터의 시퀀스를 가지고 와서 +1  //순번에서 -1한 값이 마지막 위치의 데이터가 나옴
+                    }
+
+                    let boardInfo = {
+                        no: no,
+                        title: title,
+                        content: content,
+                        view: 1
+                    }
+                    this.dataArray.push(boardInfo) //배열에 한건 추가
+                    this.listOk = true
+                    this.writeOk = false
+                    this.readOk = false
+                },
+                boardListSave: function () {
+                    //data : dataArray
+                    //fileName : 'boards.json'
+                    //fileType : text/json
+
+                    let data = this.dataArray;
+                    let fileNamd = 'boards.json'
+                    let fileType = 'text/json'
+
+                    //json 타입으로 변환해서 저장
+                    data = {
+                        boards: data
+                    }; //객체타입으로 담음
+                    data = JSON.stringify(data) //json형태로 변경
+                    console.log(data)
+                    downloadFiles(data, fileNamd, fileType)
                 }
             },
             components: {
-                'my-board-list': MyBoardList,// 목록 보여주기
-                'my-board-read': MyBoardRead  //상세보기 
+                'my-board-list': MyBoardList, // 목록 보여주기
+                'my-board-read': MyBoardRead, //상세보기 
+                'my-board-write': MyBoardWrite
             }
         })
+
+        function downloadFiles(data, fileNamd, fileType) {
+            var file = new Blob([data], {
+                type: fileType
+            }) //blob으 매개 값으로 들어감
+            var a = document.createElement('a') //링크 만듬
+            var url = URL.createObjectURL(file) //url 
+            a.href = url; //a의 href속성에 url 을 넣음
+            a.download = fileNamd
+            document.body.append(a)
+            a.click(); //a 태그를 클릭해서 다운로드 받는 형태
+
+        }
     </script>
 </body>
 
