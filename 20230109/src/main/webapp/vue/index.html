@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.js"></script> <!-- fetch같은거,, 더 쓰기 편하다고-->
+    <script src="https://unpkg.com/vue@2"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+    <div id="app">
+        <h2>회 원 관 리</h2>
+        <member-add v-bind:object="memberArray" v-if="addOk" v-on:member-list="memberList" v-on:member-add="memberAdd">
+        </member-add>
+
+        <member-list v-if="listOk" v-on:member-add="memberAdd" v-bind:object="dataArray"
+            v-on:member-edit="memberEditForm" v-on:member-list="memberList">
+        </member-list>
+
+        <member-modify v-bind:object="memberArray" v-bind:objectData="dataArray" v-on:member-edit="memberEditForm"
+            v-if="editOk" v-on:member-list="memberList" v-on:member-change="memberEdit"></member-modify>
+
+    </div>
+
+
+    <script>
+        const MemberModify = {
+            template: `
+            <div>
+					<table id="list" border="1" >
+						<tr>
+							<th>아이디</th>
+							<td>
+								<input type="text" v-bind:value="object.id" v-model="id">
+							</td>
+						</tr>
+						<tr>
+							<th>이름</th>
+							<td>
+								<input type="text"  v-bind:value="object.name" v-model="name">
+							</td>
+						</tr>
+                        <tr>
+							<th>나이</th>
+							<td>
+								<input type="text" v-bind:value="object.age" v-model="age">
+							</td>
+						</tr>
+						<tr>
+							<th >패스워드</th>
+							<td>
+								<input type="password" v-bind:value="object.pass" v-model="pass">
+							</td>
+						</tr>
+						<tr>
+							<th >패스워드확인</th>
+							<td>
+								<input type="password"v-bind:value="object.passCk" v-model="passCk">
+							</td>
+						</tr>
+						
+						<tr>
+							<th >주소</th>
+							<td>
+								<input type="text" v-bind:value="object.addres" v-model="address">
+							</td>
+						</tr>
+						<tr>
+							<th >연락처</th>
+							<td>
+								<input type="tel" v-bind:value="object.tel" v-model="tel">
+							</td>
+						</tr>
+					</table>
+                    <button v-on:click="memberEditChild">수정</button>
+                    <button v-on:click="memberListChild">목록보기</button>
+				</div>
+            `,
+            props: ['object'],
+            data: function () {
+                return {
+                    oldId: this.object.id,
+                    oldName: this.object.name,
+                    oldPass: this.object.pass,
+                    oldPassCk: this.object.passCk,
+                    oldAddress: this.object.address,
+                    oldTel: this.object.tel,
+                    oldAge: this.object.age
+                }
+            },
+            methods: {
+                memberListChild: function () {
+                    this.$emit('member-list')
+                },
+                memberEditChild: function (member) {
+                   this.$emit('member-change',member)
+
+
+                }
+            }
+
+        }
+        const MemberList = {
+            template: `
+    <div>
+        <table class="table">
+        <thead>
+            <tr>
+                <th>회원 아이디</th>
+                <th>회원 이름</th>
+                <th>회원 나이</th>
+              
+                <th>주소</th>
+                <th>연락처</th>
+                <th>수정</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="member in object">
+            <td>{{member.id}}</td>
+            <td>{{member.name}}</td>
+            <td>{{member.age}}</td>
+            <td>{{member.address}}</td>
+            <td>{{member.tel}}</td>
+            <td><button v-on:click="memberEditFormChild(member)">수정</button></td>
+            </tr>
+        </tbody>
+        <button v-on:click="memberAddChild">회원가입으로이동</button>
+        </table>
+
+    </div>
+            `,
+            props: ['object'],
+            methods: {
+                memberListChild: function () {
+                    this.$emit('member-list')
+                },
+                memberAddChild: function () {
+                    this.$emit('member-add')
+                },
+                memberEditFormChild: function ( ) {
+                    // console.log(id)
+                    this.$emit('member-edit', this.id, this.name, this.age, this.pass, this.passCk, this.address,
+                        this.tel)
+                }
+            }
+
+        }
+
+        const MemberAdd = {
+            template: `
+            <div>
+				<div>
+					<table id="list" border="1">
+						<tr>
+							<th >아이디</th>
+							<td >
+								<input type="text" v-model="id">
+							</td>
+						</tr>
+						<tr>
+							<th>이름</th>
+							<td>
+								<input type="text" v-model="name">
+							</td>
+						</tr>
+                        <tr>
+							<th>나이</th>
+							<td>
+								<input type="text" v-model="age">
+							</td>
+						</tr>
+						<tr>
+							<th >패스워드</th>
+							<td>
+								<input type="password" v-model="pass">
+							</td>
+						</tr>
+						<tr>
+							<th >패스워드확인</th>
+							<td>
+								<input type="password" v-model="passCk">
+							</td>
+						</tr>
+						
+						<tr>
+							<th >주소</th>
+							<td>
+								<input type="text" v-model="address">
+							</td>
+						</tr>
+						<tr>
+							<th >연락처</th>
+							<td>
+								<input type="tel" v-model="tel">
+							</td>
+						</tr>
+					</table>
+				</div><br>
+                <button v-on:click="memberAddChild">회원저장</button>
+                <button v-on:click="memberListChild">목록보기</button>
+		</div>
+            `,
+            data: function () {
+                return {
+                    id: '',
+                    name: '',
+                    pass: 1234,
+                    passCk: 1234,
+                    address: '',
+                    tel: '',
+                    age: ''
+                }
+            },
+            methods: {
+                memberAddChild: function () {
+                    this.$emit('member-add', this.id, this.name, this.age, this.pass, this.passCk, this.address,
+                        this.tel)
+                },
+                memberListChild: function () {
+                    this.$emit('member-list')
+                }
+
+            }
+        }
+        new Vue({
+            el: '#app',
+            data: {
+                memberArray: {},
+                dataArray: [],
+                addOk: true,
+                listOk: false,
+                editOk: false
+            },
+            methods: {
+                memberAdd: function (id, name, age, pass, passCk, address, tel) {
+                    let memberArray = {
+                        'id': id,
+                        'name': name,
+                        'age': age,
+                        'pass': 1234,
+                        'passCk': 1234,
+                        'address': address,
+                        'tel': tel,
+                    }
+                    this.dataArray.push(memberArray)
+                    console.log(memberArray)
+                    this.addOk = true
+                    this.listOk = false
+                    this.editOk = false
+                },
+                memberList: function () {
+                    this.addOk = false
+                    this.listOk = true
+                    this.editOk = false
+                },
+                memberEditForm: function (member) {
+
+                    this.addOk = false
+                    this.listOk = false
+                    this.editOk = true
+                    // this.memberArray = member
+                },
+                memberEdit: function (id,name,age,pass,passCk,address,tel) {
+                    let newMember = {
+                        name: this.name,
+                        age: this.age,
+                        pass: this.pass,
+                        passCk: this.passCk,
+                        address: this.address,
+                        tel: this.tel
+                    }
+                    this.dataArray.splice(this.newMember)
+
+
+                }
+            },
+            components: {
+                'member-add': MemberAdd,
+                'member-list': MemberList,
+                'member-modify': MemberModify
+            }
+        })
+    </script>
+</body>
+
+</html>
