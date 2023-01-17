@@ -76,7 +76,7 @@
 							</td>
 						</tr>
 					</table>
-                    <button v-on:click="memberEditChild(id,name,age,pass,passCk,address,tel)">수정</button>
+                    <button v-on:click="memberEditChild(id, name, age, pass, passCk, address,tel)">수정</button>
                     <button v-on:click="memberListChild">목록보기</button>
 				</div>
             `,
@@ -89,7 +89,7 @@
                     pass: this.object.pass,
                     passCk: this.object.passCk,
                     address: this.object.address,
-                    tel: this.object.tel,
+                    tel: this.object.tel
                 }
             },
             methods: {
@@ -98,8 +98,6 @@
                 },
                 memberEditChild: function () {
                    this.$emit('member-edit', this.id, this.name, this.age, this.pass, this.passCk, this.address, this.tel)
-
-
                 }
             }
 
@@ -136,14 +134,10 @@
             `,
             props: ['object'],
             methods: {
-                // memberListChild: function () {
-                //     this.$emit('member-list')
-                // },
                 memberAddFormChild: function () {
                     this.$emit('member-add-form')
                 },
                 memberEditFormChild: function (info) {
-                    // console.log(id)
                     this.$emit('member-edit',info)
                 }
             }
@@ -241,8 +235,8 @@
                         id: id,
                         name: name,
                         age: age,
-                        pw: 1234,
-                        passCk: 1324,
+                        pw: pass,
+                        passCk: passCk,
                         address: address,
                         tel: tel
                     }
@@ -262,7 +256,6 @@
                     this.editOk = false
                 },
                 memberEditForm: function (member) {
-
                     this.memberInfo = member
                     this.addOk = false
                     this.listOk = false
@@ -278,7 +271,7 @@
                         address: address,
                         tel: tel
                     }
-                    
+                    console.log(memberInfo)
                     this.memberArray.forEach((member,idx) => {
                         if(member.id == id){
                             this.memberArray.splice(idx,1,memberInfo)
