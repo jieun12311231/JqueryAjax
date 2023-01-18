@@ -17,7 +17,7 @@
         <member-add  v-if="addOk" v-on:member-list="memberList" v-on:member-add="memberAdd">
         </member-add>
 
-        <member-list v-if="listOk" v-on:member-add-form="memberAddForm" v-bind:object="memberArray"
+        <member-list v-if="listOk" v-on:member-add-form="memberAddform" v-bind:object="memberArray"
             v-on:member-edit="memberEditForm" >
         </member-list>
 
@@ -35,25 +35,25 @@
 						<tr>
 							<th>아이디</th>
 							<td>
-								<input type="text" v-model="id">
+								<input type="text" v-model="id" readonly>
 							</td>
 						</tr>
 						<tr>
 							<th>이름</th>
 							<td>
-								<input type="text"   v-model="name">
+								<input type="text"  v-model="name">
 							</td>
 						</tr>
                         <tr>
 							<th>나이</th>
 							<td>
-								<input type="text"  v-model="age">
+								<input type="text" v-model="age">
 							</td>
 						</tr>
 						<tr>
 							<th >패스워드</th>
 							<td>
-								<input type="password"  v-model="pass">
+								<input type="password" v-model="pass">
 							</td>
 						</tr>
 						<tr>
@@ -105,7 +105,7 @@
         const MemberList = {
             template: `
     <div>
-        <table class="table">
+        <table class="table" border="1">
         <thead>
             <tr>
                 <th>회원 아이디</th>
@@ -127,14 +127,14 @@
             <td><button v-on:click="memberEditFormChild(member)">수정</button></td>
             </tr>
         </tbody>
-        <button v-on:click="memberAddFormChild">회원가입으로이동</button>
         </table>
+        <button v-on:click="memberAddformChild">회원가입으로이동</button>
 
     </div>
             `,
             props: ['object'],
             methods: {
-                memberAddFormChild: function () {
+                memberAddformChild: function () {
                     this.$emit('member-add-form')
                 },
                 memberEditFormChild: function (info) {
@@ -200,13 +200,13 @@
             `,
             data: function () {
                 return {
-                    id: '',
-                    name: '',
+                    id: 'user',
+                    name: '김지은',
                     pass: 1234,
                     passCk: 1234,
-                    address: '',
-                    tel: '',
-                    age: ''
+                    address: '예담',
+                    tel: '010',
+                    age: '20'
                 }
             },
             methods: {
@@ -245,8 +245,8 @@
                     this.listOk = true
                     this.editOk = false
                 },
-                memberAddForm: function() {
-                    this.addOK = true
+                memberAddform: function() {
+                    this.addOk = true
                     this.listOK = false
                     this.editOK = false
                 },
